@@ -1,7 +1,7 @@
 <template>
   <div class="login-wrap">
     <el-form label-position="left" label-width="0px" class="demo-ruleForm login-container">
-      <h3 class="title">用户登录</h3>
+      <h3 class="title">用户注册</h3>
       <el-form-item>
         <el-input placeholder="账号" type="text" v-model="uname" autocomplete="off"></el-input>
       </el-form-item>
@@ -9,11 +9,10 @@
         <el-input placeholder="密码" type="password" v-model="password" show-password autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" style="width:100%" @click="doSubmit">登录</el-button>
+        <el-button type="primary" style="width:100%" @click="doSubmit">注册</el-button>
       </el-form-item>
       <el-form-item style="text-align: center;">
-        <!-- <router-link type="primary" :underline="false" to="/Forget">忘记密码</router-link> -->
-        <router-link type="primary" :underline="false" to="/Sign">快速注册</router-link>
+        <router-link type="primary" :underline="false" to="/">登录</router-link>
         <router-view />
       </el-form-item>
     </el-form>
@@ -40,20 +39,9 @@ export default {
 
 
       /* axios */
-      let url = this.axios.urls.p2p_user_login;
+      let url = this.axios.urls.p2p_user_zc;
       console.log(url);
       this.axios.post(url, form).then((resp) => {
-        if(resp.data.result!="帐号或密码错误"&&resp.data.result!="帐号已锁定，请与管理员联系"){
-          this.$router.push({
-            path: '/AppMain'
-          });
-          this.$store.commit('setUsername', {
-            uname: this.uname
-          });
-        }else {
-          this.$message.error(resp.data.result);
-        }
-
         console.log(resp);
       }).catch((error) => {
 
