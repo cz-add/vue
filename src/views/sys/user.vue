@@ -10,7 +10,12 @@
         <el-button size="mini" type="primary" plain class="el-icon--right" @click="hh()">返回</el-button>
       </el-form-item>
     </el-form>
+    <el-form :inline="true" class="searchBox">
+      <el-form-item label="用户名称">
+        <el-input size="small" v-model="queryForm.uname" @blur="search" placeholder="用户名称"></el-input>
+      </el-form-item>
 
+    </el-form>
     <br />
     <!--列表-->
     <el-table :data="resultt" border style="width: 100%" max-height="350">
@@ -32,8 +37,9 @@
       <el-table-column prop="sfz" label="身份证" min-width="20" align="center">
       </el-table-column>
       <el-table-column prop="tx" label="头像" min-width="20" align="center">
-
-
+        <template slot-scope="scope">
+          <img :src="scope.row.tx" width="40" height="40" class="head_pic"/>
+        </template>
       </el-table-column>
       <el-table-column prop="locked" label="状态" min-width="20" align="center">
         <template slot-scope="scope">
@@ -43,13 +49,15 @@
       </el-table-column>
 
       <el-table-column label="操作" min-width="20" align="center">
-        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"><i class="el-icon-edit"></i></el-button>
+        <template slot-scope="scope">
+        <el-button size="mini" type="danger"  @click="handleDelete(scope.$index, scope.row)"><i class="el-icon-edit"></i></el-button>
+        </template>
       </el-table-column>
     </el-table>
     <br />
     <!-- 分页组件 -->
     <el-pagination style="margin-top:10px ;text-align: center;" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                   :current-page="queryForm.page" :page-sizes="[1, 20, 30, 100]" :page-size="queryForm.rows" layout="total, sizes, prev, pager, next, jumper"
+                   :current-page="queryForm.page" :page-sizes="[5, 20, 30, 100]" :page-size="queryForm.rows" layout="total, sizes, prev, pager, next, jumper"
                    :total="queryForm.total">
     </el-pagination>
   </div>
@@ -63,8 +71,9 @@
       return {
         tx:null,
         queryForm: {
+          uname:null,
           page: 1,
-          rows: 1,
+          rows: 5,
           total: 0
         },
         resultt: [],
@@ -98,6 +107,7 @@
       search: function() {
         let url = this.axios.urls.p2p_user_list;
         this.axios.post(url, {
+          uname:this.queryForm.uname,
           rows:this.queryForm.rows,
           page:this.queryForm.page,
           total:this.queryForm.total,
@@ -112,6 +122,8 @@
 
         });
       },handleDelete: function(index, row) {
+
+        console.log(row.locked)
         this.$confirm('确定禁用改用户, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -119,12 +131,10 @@
         }).then(() => {
           let url = this.axios.urls.p2p_user_jy;
           this.axios.post(url, {
-            atvId: row.atvId
+            uid: row.uid,
+            locked:row.locked==1?0:1
           }).then((resp) => {
-            this.$message({
-              message: resp.data.message,
-              type: 'success'
-            });
+            row.locked==resp.data.result
             this.search();
           }).catch((error) => {});
         }).catch(() => {

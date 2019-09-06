@@ -43,15 +43,16 @@ export default {
       let url = this.axios.urls.p2p_user_login;
       console.log(url);
       this.axios.post(url, form).then((resp) => {
-        if(resp.data.result!="帐号或密码错误"&&resp.data.result!="帐号已锁定，请与管理员联系"){
+        console.log(resp.data.result)
+        if(resp.data.message!="帐号或密码错误"&&resp.data.message!="帐号已锁定，请与管理员联系"){
           this.$router.push({
             path: '/AppMain'
           });
           this.$store.commit('setUsername', {
-            uname: this.uname
+            uname: resp.data.result
           });
         }else {
-          this.$message.error(resp.data.result);
+          this.$message.error(resp.data.message);
         }
 
         console.log(resp);

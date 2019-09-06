@@ -7,7 +7,8 @@ export default {
   },	[SOME_MUTATION](state) {
     state.count++
   },setUsername: (state, payload) => {
-    debugger
     state.uname = payload.uname;
-  }
+  },setresulta: (state, payload) => {
+    state.resulta = payload.resulta;
+  },
 }
